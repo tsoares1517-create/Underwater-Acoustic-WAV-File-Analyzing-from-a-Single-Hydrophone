@@ -1,0 +1,22 @@
+%% Read the WAV file
+[x, Fs] = audioread('/MATLAB Drive/2022-06_18075000.WAV');
+
+% If stereo, use the first channel
+if size(x,2) > 1
+    x = x(:,1);
+end
+
+%% Create time vector
+t = (0:length(x)-1) / Fs;
+
+%% Plot time series
+figure('Position',[100 100 900 500]);
+
+plot(t, x);
+
+xlabel('Time (s)');
+ylabel('Amplitude');
+title('Time Series of Underwater Acoustic Signal');
+
+grid on;
+set(gca,'FontSize',12,'LineWidth',1.2);
