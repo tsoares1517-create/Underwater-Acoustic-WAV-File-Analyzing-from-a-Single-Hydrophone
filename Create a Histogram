@@ -1,0 +1,9 @@
+%%Histogram of time-series amplitude
+figure('Position',[100 100 700 500]);
+histogram(x,100);
+xlabel('Amplitude');
+ylabel('Number of Samples');
+title('Amplitude Distribution of Underwater Acoustic Signal');
+
+grid on;
+set(gca,'FontSize',12,'LineWidth',1.2);
