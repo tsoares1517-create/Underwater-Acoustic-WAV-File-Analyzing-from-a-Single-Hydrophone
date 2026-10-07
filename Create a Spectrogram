@@ -1,0 +1,38 @@
+%% Read the WAV file
+[x, Fs] = audioread('/MATLAB Drive/2022-06_18075000.WAV');
+
+%% If stereo, use the first channel
+if size(x,2) > 1
+    x = x(:,1);
+end
+
+%% Spectrogram parameters
+window = hamming(2048);
+noverlap = 1536;
+nfft = 4096;
+
+%% Compute the spectrogram
+[S,F,T,P] = spectrogram(x, window, noverlap, nfft, Fs);
+
+%% Convert power to decibels
+P_dB = 10*log10(P + eps);
+
+%% Plot
+figure;
+
+imagesc(T, F, P_dB);
+axis xy;
+
+% Focus on the frequencies containing most useful information
+ylim([0 3000]);
+
+% Improve contrast
+caxis([-95 -55]);
+
+xlabel('Time (s)');
+ylabel('Frequency (Hz)');
+title('Time-Frequency Spectrogram');
+
+colormap(turbo);     % Or use 'jet' or 'parula'
+colorbar;
+grid off;
