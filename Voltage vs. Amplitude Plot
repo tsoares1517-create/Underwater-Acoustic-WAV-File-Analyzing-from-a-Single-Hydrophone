@@ -1,0 +1,51 @@
+%% Read the WAV file
+
+[x, Fs] = audioread('/MATLAB Drive/20220620T222500_4407951431142804_2.0.wav');
+
+% If stereo, use the first channel
+if size(x,2) > 1
+    x = x(:,1);
+end
+
+%% Convert WAV amplitude to voltage
+
+ClipVoltage = 0.79;       % V peak, Snap gain setting 4
+RecorderGain = 2.0;       % dB
+
+V = (x * ClipVoltage) / 10^(RecorderGain/20);
+
+%% Create time vector
+
+t = (0:length(x)-1) / Fs;
+
+%% Plot amplitude and voltage
+
+figure('Position',[100 100 1100 500]);
+
+yyaxis left
+h1 = plot(t,x);
+ylabel('WAV Amplitude');
+ylim([-1 1]);
+
+yyaxis right
+h2 = plot(t,V);
+ylabel('Voltage (V)');
+
+xlabel('Time (s)');
+title('WAV Amplitude and Voltage vs. Time');
+
+grid on;
+set(gca,'FontSize',12,'LineWidth',1.2);
+
+xlim([0 t(end)]);
+
+%% Interactive data tip
+
+dcm = datacursormode(gcf);
+dcm.Enable = 'on';
+
+% Custom data tip
+dcm.UpdateFcn = @(~,event) { ...
+    ['Time: ' num2str(event.Position(1),'%.6f') ' s'], ...
+    ['Amplitude: ' num2str(interp1(t,x,event.Position(1)),'%.6f')], ...
+    ['Voltage: ' num2str(interp1(t,V,event.Position(1)),'%.6f') ' V']};
